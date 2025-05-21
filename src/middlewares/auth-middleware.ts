@@ -1,6 +1,22 @@
-const jwt = require('jsonwebtoken');
+import { NextFunction, Request, Response } from "express";
 
-const authMiddleware = (req, res, next) => {
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
+declare global {
+
+  namespace Express {
+
+    interface Request {
+
+      user?: string | JwtPayload;
+
+    }
+
+  }
+
+}
+
+const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -12,10 +28,12 @@ const authMiddleware = (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    // eslint-disable-next-line no-undef
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Substitua JWT_SECRET pela sua chave secreta
     console.log(decoded);
-    req.user = decoded; // Adiciona os dados do token ao objeto req
+    req.user = decoded as string | JwtPayload; // Adiciona os dados do token ao objeto req
     next();
   } catch (err) {
     console.error(err);
@@ -23,4 +41,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;

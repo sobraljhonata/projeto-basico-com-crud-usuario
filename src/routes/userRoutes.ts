@@ -168,4 +168,4 @@ router.delete(
   routeAdapter(new DeletarUsuarioController())
 );
 
-module.exports = router;
+export default router;

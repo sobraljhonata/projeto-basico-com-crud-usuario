@@ -2,4 +2,4 @@ const { json } = require('express');
 
 const bodyParser = json();
 
-module.exports = bodyParser;
+export default bodyParser;

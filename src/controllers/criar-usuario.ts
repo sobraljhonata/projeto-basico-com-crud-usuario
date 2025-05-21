@@ -1,11 +1,11 @@
-const User = require('../models/user-model');
-const bcrypt = require('bcrypt');
+import User from '../models/user-model';
+import bcrypt from 'bcrypt';
 class CriarUsuarioController {
   /**
    * @param {HttpRequest} request - Objeto da requisição HTTP
    * @returns {Promise<HttpResponse>}
    */
-  async handle(httpRequest) {
+  async handle(httpRequest: { body: { nome: any; email: any; senha: any; }; }) {
     try {
       const { nome, email, senha } = httpRequest.body;
 
@@ -23,7 +23,7 @@ class CriarUsuarioController {
         statusCode: 201,
         body: usuario,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         statusCode: 500,
         body: { error: error.message },
@@ -32,4 +32,4 @@ class CriarUsuarioController {
   }
 }
 
-module.exports = CriarUsuarioController;
+export default CriarUsuarioController;

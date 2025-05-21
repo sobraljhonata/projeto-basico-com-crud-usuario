@@ -1697,7 +1697,8 @@ module.exports = sequelize;
 1. **Rode o seguinte código para instalar as dependências:**
 
 ```bash
-npm install --save-dev sucrase typescript @types/node
+npm install --save-dev sucrase typescript @types/node --legacy-peer-deps ## npm
+yarn add -D sucrase typescript @types/node ## yarn
 ```
 
 2. **Crie o arquivo tsconfig.json na raiz do projeto:**
@@ -1771,7 +1772,8 @@ module.exports = {
 
 4. **Rode o comando para instalar a biblioteca os tipos:**:
 ```bash
-npm install --save-dev @types/express @types/jsonwebtoken
+npm install --save-dev @types/express @types/prompt @types/jsonwebtoken --legacy-peer-deps
+yarn add -D @types/express @types/prompt @types/jsonwebtoken
 ```
 
 5. **Altere o arquivo server.ts e insira o seguinte código:**

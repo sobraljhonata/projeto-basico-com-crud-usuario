@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const routeAdapter = require('../adapters/express-route-adapter');
-const LoginController = require('../controllers/login-controller');
-const RefreshTokenController = require('../controllers/refresh-token');
+import routeAdapter from '../adapters/express-route-adapter';
+import LoginController from '../controllers/login-controller';
+import RefreshTokenController from '../controllers/refresh-token';
 
 /**
  * @swagger
@@ -103,4 +103,4 @@ router.post('/login', routeAdapter(new LoginController()));
  *        description: Erro interno do servidor
  */
 router.post('/refresh-token', routeAdapter(new RefreshTokenController()));
-module.exports = router;
+export default router;

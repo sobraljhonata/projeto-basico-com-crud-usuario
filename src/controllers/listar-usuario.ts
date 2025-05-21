@@ -1,7 +1,7 @@
-const User = require('../models/user-model');
+import User from '../models/user-model';
 
 class ListarUsuarioController {
-  async handle(req) {
+  async handle(req: { params: { id: any; }; }) {
     try {
       const userId = req.params?.id;
       const usuario = await User.findByPk(userId);
@@ -21,7 +21,7 @@ class ListarUsuarioController {
         statusCode: 200,
         body: usuarios,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         statusCode: 500,
         body: { error: error.message },
@@ -30,4 +30,4 @@ class ListarUsuarioController {
   }
 }
 
-module.exports = ListarUsuarioController;
+export default ListarUsuarioController;

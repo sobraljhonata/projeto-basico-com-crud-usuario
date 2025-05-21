@@ -1,16 +1,15 @@
 // Bibliotecas
-const express = require('express');
-const prompt = require('prompt');
-const fs = require('fs');
-const path = require('path');
-const { swaggerUi, specs } = require('./swaggerConfig'); // Importar configuração do Swagger
-const sequelize = require('./database'); // Importar a configuração do banco de dados
-// Middlewares
-const middlewares = require('./middlewares');
+import express from 'express';
+import prompt from 'prompt';
+import fs from 'fs';
+import path from 'path';
+import { swaggerUi, specs } from './swaggerConfig';
+import sequelize from './database';
+// // Middlewares
+import middlewares from './middlewares';
 
 // Cria o servidor express
 const app = express();
-// eslint-disable-next-line no-undef
 const initialPort = process.env.PORT || 3000;
 
 // Configura o Swagger
@@ -26,14 +25,13 @@ app.use(middlewares.contentType);
 app.use(middlewares.bodyParser);
 
 // Carregar dinamicamente todas as rotas na pasta 'routes'
-// eslint-disable-next-line no-undef
 fs.readdirSync(path.join(__dirname, 'routes')).forEach((file) => {
   const route = require(`./routes/${file}`);
   app.use('/api', route);
 });
 
 // Função para iniciar o servidor em uma porta específica
-const startServer = (port) => {
+const startServer = (port: number) => {
   app
     .listen(port, () => {
       console.log(`Servidor rodando na porta ${port}`);
@@ -41,11 +39,11 @@ const startServer = (port) => {
         `Documentação da API disponível em http://localhost:${port}/api-docs`
       );
     })
-    .on('error', (err) => {
+    .on('error', (err:any) => {
       if (err.code === 'EADDRINUSE') {
         console.log(`Porta ${port} está ocupada.`);
         const newPort = port + 1;
-        promptUserForNewPort(newPort);
+        promptUserForNewPort(`${newPort}`);
       } else {
         console.error(err);
       }
@@ -53,7 +51,7 @@ const startServer = (port) => {
 };
 
 // Função para perguntar ao usuário se deseja usar a nova porta
-const promptUserForNewPort = (newPort) => {
+const promptUserForNewPort = (newPort: string) => {
   prompt.start();
   const schema = {
     properties: {
@@ -66,12 +64,12 @@ const promptUserForNewPort = (newPort) => {
     },
   };
 
-  prompt.get(schema, (err, result) => {
+  prompt.get(schema, (err: any, result: any) => {
     if (
       result.useNewPort.toLowerCase() === 'sim' ||
       result.useNewPort.toLowerCase() === 's'
     ) {
-      startServer(newPort);
+      startServer(parseInt(newPort));
     } else {
       console.log('Servidor não iniciado.');
     }
@@ -84,8 +82,8 @@ sequelize
   .sync()
   .then(() => {
     console.log('Banco de dados sincronizado');
-    startServer(initialPort);
+    startServer(Number(initialPort));
   })
-  .catch((err) => {
+  .catch((err: any) => {
     console.error('Erro ao sincronizar o banco de dados:', err);
   });

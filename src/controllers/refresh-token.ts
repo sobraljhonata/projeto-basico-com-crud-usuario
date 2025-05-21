@@ -1,12 +1,14 @@
-const User = require('../models/user-model');
-const jwt = require('jsonwebtoken');
+import { Controller } from "../interfaces";
 
-class RefreshTokenController {
+import User from '../models/user-model';
+import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
+
+class RefreshTokenController implements Controller {
   /**
    * @param {HttpRequest} httpRequest - Objeto da requisição HTTP
    * @returns {Promise<HttpResponse>}
    */
-  async handle(httpRequest) {
+  async handle(httpRequest: { body: { refreshToken: string } }) {
     try {
       const { refreshToken } = httpRequest.body;
 
@@ -19,7 +21,11 @@ class RefreshTokenController {
 
       // Verifique o refresh token
       // eslint-disable-next-line no-undef
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+      const secret = process.env.JWT_REFRESH_SECRET;
+      if (!secret) {
+        throw new Error('JWT_REFRESH_SECRET is not defined');
+      }
+      const decoded = jwt.verify(refreshToken, secret) as JwtPayload;
 
       // Opcional: Verifique se o refresh token ainda é válido no banco de dados
       const user = await User.findByPk(decoded.id);
@@ -30,20 +36,21 @@ class RefreshTokenController {
         };
       }
 
+      const signOptions: SignOptions = {
+        expiresIn: '15m',
+      };
       // Gere um novo access token
       const newAccessToken = jwt.sign(
         { id: user.id, email: user.email },
-        // eslint-disable-next-line no-undef
-        process.env.JWT_SECRET,
-        // eslint-disable-next-line no-undef
-        { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+        process.env.JWT_SECRET || (() => { throw new Error('JWT_SECRET is not defined'); })(),
+        signOptions
       );
 
       return {
         statusCode: 200,
         body: { token: newAccessToken },
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         statusCode: 500,
         body: { message: 'Erro interno do servidor', error: error.message },
@@ -52,4 +59,4 @@ class RefreshTokenController {
   }
 }
 
-module.exports = RefreshTokenController;
+export default RefreshTokenController;

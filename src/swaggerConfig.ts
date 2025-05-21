@@ -15,7 +15,7 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 
-module.exports = {
+export {
   swaggerUi,
   specs,
 };

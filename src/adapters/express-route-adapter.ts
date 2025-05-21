@@ -1,9 +1,11 @@
-const adaptRoute = (controller) => {
-  return async function (req, res) {
+import { Request, Response } from 'express';
+import { Controller } from '../interfaces';
+const adaptRoute = (controller: Controller) => {
+  return async function (req: Request, res: Response) {
     const httpRequest = {
       body: req?.body,
       params: req?.params,
-      pathParameters: req?.pathParameters,
+      pathParameters: req?.params,
       queryStringParameters: req?.query,
     };
     const httpResponse = await controller.handle(httpRequest);
@@ -11,4 +13,4 @@ const adaptRoute = (controller) => {
   };
 };
 
-module.exports = adaptRoute;
+export default adaptRoute;
